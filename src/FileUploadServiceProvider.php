@@ -13,6 +13,14 @@ class FileUploadServiceProvider extends ServiceProvider
         // $this->mergeConfigFrom(
         //     __DIR__.'/config/aws.php', 'fileUpload'
         // );
+
+        $this->publishes([
+            __DIR__.'/resources/views' => resource_path('views/vendor/file-upload'),
+
+        ]);
+        $this->publishes([
+            __DIR__.'/database/migrations/' => database_path('migrations')
+        ]);
     }
 
     public function register()

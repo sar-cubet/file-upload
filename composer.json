@@ -17,5 +17,13 @@
     "minimum-stability": "dev",
     "require": {
         "aws/aws-sdk-php": "^3.0"
+    },
+    "extra": {
+        "laravel": {
+           "providers": [
+                "SarCubet\\FileUpload\\FileUploadServiceProvider"
+            ]
+        }
     }
+
 }

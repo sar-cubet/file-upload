@@ -205,6 +205,36 @@
         }
 
     </style>
+
+    <style>
+        .input-group {
+            margin-top: 30px;
+            position: relative;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group-addon {
+            border: none;
+        }
+
+        .linkname {
+            display: none;
+        }
+
+        #copyButton {
+            cursor: pointer;
+            background: #f1bb3a;
+        }
+
+        #copyTarget {
+            border-left: none;
+        }
+
+
+    </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
@@ -241,13 +271,6 @@
                     <button type="button" onclick="removeUpload()" class="remove-image">Remove Image</button>
                     </div>
                 </div><br>
-
-                {{-- <div class="form-group save-image">
-                    <label for="name" class="col-sm-2 col-form-label no-padding">Name</label>
-                    <div class="col-sm-10 no-padding">
-                        <input type="text" class="form-control" name="name" id="name" placeholder="Enter Image name">
-                    </div>
-                </div><br><br> --}}
                 
                 <div class="form-group save-image">
                     <label for="quality" class="col-sm-2 col-form-label no-padding">Quality</label>
@@ -268,35 +291,19 @@
                 </div>
             </div><br><br>
 
-            <div style="width: 75%;">
+            <div style="width: 90%;">
                 <table id="example" class="display" cellspacing="0" width="100%">
                     <thead>
                         <tr>
-                            <th style="width: 60px !important;">No</th>
-                            <th>image</th>
-                            <th style="width: 100px !important;">actions</th>
+                            <th style="width: 15px !important;">No</th>
+                            <th style="width: 15px !important;">Image</th>
+                            <th>Link</th>
+                            <th style="width: 70px !important;">Actions</th>
                         </tr>
                     </thead>
             
                     <tbody id="image-tbody">
-                    
-                        {{-- <tr>
-                            <td>1</td>
-                            <td>
-                                <img src="{{ asset('public/vendor/file_upload_package/images6461d8db161bc.png') }}" alt="Image" width="150px">
-                            </td>
-                            <td>
-                                <div class="btn-group" role="group">
-                                    <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Action
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                        <a class="dropdown-item" href="#">View</a>
-                                        <a class="dropdown-item" href="#">Download</a>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr> --}}
+                
                     </tbody>
                 </table>
             </div>
@@ -348,7 +355,7 @@
         var csrfToken = $('meta[name="csrf-token"]').attr('content');;
         formData.append('image', $('input[name="image"]')[0].files[0]);
         formData.append('name', $('input[name="name"]').val());
-        formData.append('qulaity', $('input[name="quality"]').val());
+        formData.append('quality', $('input[name="quality"]:checked').val());
         
 
         console.log(csrfToken)
@@ -371,7 +378,7 @@
                     
                     setTimeout(function() {
                         location.reload();
-                    }, 3000);
+                    }, 2000);
                 }else{
                     if(response.errors.image.length > 0 ){
                         let ul = '<ul>'
@@ -410,30 +417,37 @@
                         console.log(response)
 
                         var tableData = response.data
-                        let tr = ''
                         var table = $('#example').DataTable();
 
                         for(let i=0; i<tableData.length; i++){
                             let imagePath = "{{ asset('') }}" + tableData[i].path
                         
                             let col1 = `<td>${i+1}</td>`
-                            let col2 = `<img src="${imagePath}" alt="Image" width="150px">`
+                            let col2 = `<img src="${imagePath}" alt="Image" width="120px">`
                             let col3 = 
+                                    `
+                                    <div class="input-group">
+                                        <input type="text" id="copyTarget_${i}" class="form-control" value="${imagePath}" disabled>
+                                        <span id="copyButton" class="input-group-addon btn" title="Click to copy" onclick="copyToClipboard(${i})">
+                                        <i class="fa fa-clipboard" aria-hidden="true" onclick="changeText(this)">Copy</i>
+                                        </span>
+                                    </div>
+                                    `
+                            let col4 = 
                                     `<div class="btn-group" role="group">
-                                        <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Action
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                            <a class="dropdown-item" href="#">View</a>
-                                            <a class="dropdown-item" href="#">Download</a>
+                                            <button class="dropdown-item btn btn-primary" onclick="openInNewTab('${imagePath}')">View</button>
+                                            <button class="dropdown-item btn btn-primary" onclick="downloadImage('${imagePath}')">Download</button>
                                         </div>
                                     </div>`
 
-                            let row = [col1, col2, col3]
+                            let row = [col1, col2, col3, col4]
                             table.row.add(row).draw()
                         }
 
-                        $('#image-tbody').append(tr);
                         setTimeout(function() {
                             $('#example').DataTable();
                         }, 100);
@@ -447,6 +461,34 @@
         });
     }
 
+    function downloadImage(url) {
+        fetch(url)
+            .then(response => response.blob())
+            .then(blob => {
+
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            
+            const filename = getFilenameFromURL(url);
+            link.download = filename;
+            
+            link.click();
+            URL.revokeObjectURL(link.href);
+        })
+        .catch(error => {
+            console.error('Error downloading image:', error);
+        });
+    }
+
+    function getFilenameFromURL(url) {
+        const lastSlashIndex = url.lastIndexOf('/');
+        return url.substring(lastSlashIndex + 1);
+    }
+
+    function openInNewTab(url) {
+        window.open(url, '_blank');
+    }
+
 
     function closeAlert(){
         $('.alert-ul').empty()
@@ -456,6 +498,20 @@
 
     function showAlert(){
         $('#alert').addClass('show')
+    }
+
+    function changeText(ele)
+    {
+        ele.textContent = 'Copied'
+
+        setTimeout(function() {
+            ele.textContent = 'Copy'
+        }, 3000);
+    }
+
+    function copyToClipboard(index) {
+        var target = document.getElementById("copyTarget_"+index)
+        navigator.clipboard.writeText(target.value)
     }
     
 </script>

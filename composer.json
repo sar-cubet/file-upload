@@ -16,9 +16,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "aws/aws-sdk-php": "^3.0",
-        "intervention/image": "^3.0@alpha"
-        
+        "intervention/image": "^2.7"
     },
     "extra": {
         "laravel": {

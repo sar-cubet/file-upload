@@ -30,5 +30,11 @@ You can install the package via Composer. Run the following command:
         'visibility' => 'public',
     ]
 
-#php artisan vendor:publish --provider="SarCubet\FileUpload\FileUploadServiceProvider"
+#publish the package
+
+    php artisan vendor:publish --provider="SarCubet\FileUpload\FileUploadServiceProvider"
+
+#migrate
+
+    php artisan migrate
 

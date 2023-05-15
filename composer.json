@@ -1,0 +1,21 @@
+{
+    "name": "sar-cubet/file-upload",
+    "description": "An interface for users to upload different type of files and store them.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "SarCubet\\FileUpload\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Sarath S",
+            "email": "sarth.snair@cubettech.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "aws/aws-sdk-php": "^3.0"
+    }
+}

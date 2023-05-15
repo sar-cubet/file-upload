@@ -16,7 +16,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "intervention/image": "^2.7"
+        "intervention/image": "^2.7" 
     },
     "extra": {
         "laravel": {

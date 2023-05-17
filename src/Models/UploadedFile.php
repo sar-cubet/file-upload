@@ -25,7 +25,6 @@ class UploadedFile extends Model
         $image->save($tempPath);
 
         $filename = uniqid() . '.' . $extension;
-        // $path = $image->storeAs('', $filename, 'file_upload_package');
         $path = Storage::disk('file_upload_package')->putFileAs('', $tempPath, $filename);
 
         unlink($tempPath);

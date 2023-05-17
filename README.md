@@ -12,8 +12,8 @@ This is a Laravel package that provides file upload functionality with ease. It 
 
 ## Requirements
 
-- PHP >= 9.52.7
-- Laravel >= 8.0
+- PHP >= 8.0
+- Laravel >= 9.52.7
 
 ## Installation
 
@@ -37,4 +37,23 @@ You can install the package via Composer. Run the following command:
 #migrate
 
     php artisan migrate
+
+## Implementation
+
+You can optimize the image by using the SarCubet\FileUpload\Facades\Upload Facade. Optimization is provided in 3 levels (excellent, moderate and average). 
+
+    use SarCubet\FileUpload\Facades\Upload;
+    $file = Upload::optimizeImage($request->file('image'), 'moderate'); 
+
+File storage is also possible through Upload facade.
+
+    $url = Upload::store($file, 's3');
+
+For those who use blade template engine along with laravel, we provide an additional UI for uploading image and listing the uploaded images. Just need to add these 2 routes in web.php (use the route name "getFiles" itself)
+
+    Route::get('/file-upload', [YourController::class, 'fileUpload']);
+    Route::get('/get-files', [YourController::class, 'getFiles'])->name('getFiles');
+
+
+
 

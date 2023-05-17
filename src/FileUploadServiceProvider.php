@@ -25,7 +25,9 @@ class FileUploadServiceProvider extends ServiceProvider
 
     public function register()
     {
-
+        $this->app->bind('upload', function($app) {
+            return new Upload();
+        });
     }
 }
 

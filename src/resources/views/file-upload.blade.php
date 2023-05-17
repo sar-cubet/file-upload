@@ -420,7 +420,8 @@
                         var table = $('#example').DataTable();
 
                         for(let i=0; i<tableData.length; i++){
-                            let imagePath = "{{ asset('') }}" + tableData[i].path
+                            {{-- let imagePath = "{{ asset('') }}" + tableData[i].path --}}
+                            let imagePath = tableData[i].path
                         
                             let col1 = `<td>${i+1}</td>`
                             let col2 = `<img src="${imagePath}" alt="Image" width="120px">`

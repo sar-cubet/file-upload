@@ -54,6 +54,17 @@ For those who use blade template engine along with laravel, we provide an additi
     Route::get('/file-upload', [YourController::class, 'fileUpload']);
     Route::get('/get-files', [YourController::class, 'getFiles'])->name('getFiles');
 
+Load view file for file upload
 
+    return view('fileUpload::file-upload');
+
+Function for listing files
+
+    public function getFiles()
+    {
+        $data = UploadedFile::orderByDesc('id')->get();
+        // Your logic
+        return response()->json(['status' => 1, 'data' => $data]);
+    }
 
 

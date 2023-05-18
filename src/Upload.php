@@ -5,6 +5,7 @@ use Intervention\Image\Facades\Image;
 use InvalidArgumentException;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Validator;
 
 class Upload
 {
@@ -116,5 +117,45 @@ class Upload
             $extension = '';
 
         return $extension;
+    }
+
+    public function validateFile(UploadedFile $file)
+    {
+        $allowedImageExtensions = ['jpeg', 'jpg', 'png', 'gif'];
+        $allowedDocumentExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'];
+        $allowedTextExtensions = ['txt'];
+        $allowedExecutableExtensions = ['exe'];
+        $extension = $file->getClientOriginalExtension();
+
+        if (in_array($extension, $allowedImageExtensions)) {
+            $rules = [
+                'file' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120'
+            ];
+        }else if(in_array($extension, $allowedDocumentExtensions)){
+            $rules = [
+                'file' => 'required|mimes:doc,docx,xls,xlsx,ppt,pptx|max:5120'
+            ];
+        }elseif (in_array($extension, $allowedTextExtensions)) {
+            $rules = [
+                'file' => 'required|mimes:txt|max:5120'
+            ];
+        } elseif (in_array($extension, $allowedExecutableExtensions)) {
+            $rules = [
+                'file' => 'required|mimes:exe|max:5120'
+            ];
+        } else {
+            $rules = [
+                'file' => 'required|mimes:jpeg,png,jpg,gif,pdf,doc,docx,xls,xlsx,ppt,pptx,txt,exe|max:5120'
+            ];
+        }
+
+        $validator = $this->validate($file, $rules);
+        return $validator;
+    }
+
+    private function validate($file, $rules)
+    {
+        $validator = Validator::make(['file' => $file], $rules);
+        return $validator;
     }
 }

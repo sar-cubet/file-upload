@@ -260,7 +260,7 @@
 		<h1>File Upload</h1>
             <div class="file-upload">
                 <div class="image-upload-wrap">
-                    <input class="file-upload-input" name="image" type='file' onchange="readURL(this);" accept="image/*" />
+                    <input class="file-upload-input" name="file" type='file' onchange="readURL(this);" accept="" />
                     <div class="drag-text">
                     <h3>Drag and drop or click to add an Image</h3>
                     </div>
@@ -322,8 +322,8 @@
                 $('.file-upload-image').attr('src', e.target.result);
                 $('.file-upload-content').show();
                 $('.save-image').show();
-                let fileName = input.files[0].name.split('.').shift();
-                $('#name').val(fileName)
+                {{-- let fileName = input.files[0].name.split('.').shift(); --}}
+                {{-- $('#name').val(fileName) --}}
             };
 
             reader.readAsDataURL(input.files[0]);
@@ -353,7 +353,7 @@
 
         var formData = new FormData();
         var csrfToken = $('meta[name="csrf-token"]').attr('content');;
-        formData.append('image', $('input[name="image"]')[0].files[0]);
+        formData.append('file', $('input[name="file"]')[0].files[0]);
         formData.append('name', $('input[name="name"]').val());
         formData.append('quality', $('input[name="quality"]:checked').val());
         

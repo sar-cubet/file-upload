@@ -17,15 +17,12 @@ class FileUploadController extends Controller
 
     public function uploadProcess(Request $request)
     {
-        $rules = [
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:3072'
-        ];
-        $validator = Validator::make($request->all(), $rules);
+        $validator = Upload::validateFile($request->file('file'));
 
         if ($validator->fails()) {
             return response()->json(['status' => 0, 'errors' => $validator->errors()]);
         }
-        // $path = UploadedFile::optimizeImage($request->file('image'), $request->quality);
+
         $file = Upload::optimizeImage($request->file('image'), $request->quality);
         $url = Upload::store($file, 's3');
         

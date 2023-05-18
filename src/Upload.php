@@ -133,7 +133,7 @@ class Upload
             ];
         }else if(in_array($extension, $allowedDocumentExtensions)){
             $rules = [
-                'file' => 'required|mimes:doc,docx,xls,xlsx,ppt,pptx|max:5120'
+                'file' => 'required|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx|max:5120'
             ];
         }elseif (in_array($extension, $allowedTextExtensions)) {
             $rules = [

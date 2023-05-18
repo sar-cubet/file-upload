@@ -21,15 +21,6 @@ You can install the package via Composer. Run the following command:
 
 #composer require sar-cubet/file-upload
 
-#add this configuration to config/filesystems.php
-
-    'file_upload_package' => [
-        'driver' => 'local',
-        'root' => base_path('public/vendor/file_upload_package/images'),
-        'url' => env('APP_URL') . '/public/vendor/file_upload_package/images',
-        'visibility' => 'public',
-    ]
-
 #publish the package
 
     php artisan vendor:publish --provider="SarCubet\FileUpload\FileUploadServiceProvider"

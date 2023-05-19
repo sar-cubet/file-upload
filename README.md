@@ -68,9 +68,9 @@ $file = Upload::optimizeImage($request->file('image'), 'moderate');
 
 File storage is also possible through `Upload` facade.
 
-    ```php
-    $url = Upload::store($file, 's3');
-    ```
+```php
+$url = Upload::store($file, 's3');
+```
 
 For those who use **blade template engine** along with laravel, we provide an additional UI for uploading image and listing the uploaded images. Just need to add these 2 **routes** in **web.php** (use the route name **"getFiles"** itself)
 

@@ -119,43 +119,69 @@ class Upload
         return $extension;
     }
 
-    public function validateFile(UploadedFile $file)
+    public function validateFile(UploadedFile $file, array $rulesArray = [], array $messagesArray = [])
     {
-        $allowedImageExtensions = ['jpeg', 'jpg', 'png', 'gif'];
-        $allowedDocumentExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'];
-        $allowedTextExtensions = ['txt'];
-        $allowedExecutableExtensions = ['exe'];
-        $extension = $file->getClientOriginalExtension();
+        $rules = [];
+        $messages = [];
 
-        if (in_array($extension, $allowedImageExtensions)) {
+        if(count($rulesArray)){
+            if(count($messagesArray)){
+                if(! $this->checkRulesAndMessagesCount($rulesArray, $messagesArray)){
+                    throw new InvalidArgumentException("Number of rules doesn't match number of messages.");
+                }
+                foreach ($rulesArray as $key => $rule) {
+                    if(strpos($rule, ':') !== false){
+                        $rule = explode(':', $rule)[0];
+                    }
+                    $messages['file.'.$rule] = $messagesArray[$key];
+                }
+            }
+
             $rules = [
-                'file' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120'
+                'file' => implode('|', $rulesArray)
             ];
-        }else if(in_array($extension, $allowedDocumentExtensions)){
-            $rules = [
-                'file' => 'required|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx|max:5120'
-            ];
-        }elseif (in_array($extension, $allowedTextExtensions)) {
-            $rules = [
-                'file' => 'required|mimes:txt|max:5120'
-            ];
-        } elseif (in_array($extension, $allowedExecutableExtensions)) {
-            $rules = [
-                'file' => 'required|mimes:exe|max:5120'
-            ];
-        } else {
-            $rules = [
-                'file' => 'required|mimes:jpeg,png,jpg,gif,pdf,doc,docx,xls,xlsx,ppt,pptx,txt,exe|max:5120'
-            ];
+        }else{
+            $allowedImageExtensions = ['jpeg', 'jpg', 'png', 'gif'];
+            $allowedDocumentExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'];
+            $allowedTextExtensions = ['txt'];
+            $allowedExecutableExtensions = ['exe'];
+            $extension = $file->getClientOriginalExtension();
+    
+            if (in_array($extension, $allowedImageExtensions)) {
+                $rules = [
+                    'file' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120'
+                ];
+            }else if(in_array($extension, $allowedDocumentExtensions)){
+                $rules = [
+                    'file' => 'required|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx|max:5120'
+                ];
+            }elseif (in_array($extension, $allowedTextExtensions)) {
+                $rules = [
+                    'file' => 'required|mimes:txt|max:5120'
+                ];
+            } elseif (in_array($extension, $allowedExecutableExtensions)) {
+                $rules = [
+                    'file' => 'required|mimes:exe|max:5120'
+                ];
+            } else {
+                $rules = [
+                    'file' => 'required|mimes:jpeg,png,jpg,gif,pdf,doc,docx,xls,xlsx,ppt,pptx,txt,exe|max:5120'
+                ];
+            }
         }
 
-        $validator = $this->validate($file, $rules);
+        $validator = $this->validate($file, $rules, $messages);
         return $validator;
     }
 
-    private function validate($file, $rules)
+    private function checkRulesAndMessagesCount($rules, $messages)
     {
-        $validator = Validator::make(['file' => $file], $rules);
+        return count($rules) === count($messages);
+    }
+
+    private function validate($file, $rules,$messages)
+    {
+        $validator = Validator::make(['file' => $file], $rules, $messages);
         return $validator;
     }
 }

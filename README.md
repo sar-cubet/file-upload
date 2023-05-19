@@ -21,11 +21,11 @@ You can install the package via **Composer**. Run the following command:
 
     composer require sar-cubet/file-upload
 
-#publish the package
+# publish the package
 
     php artisan vendor:publish --provider="SarCubet\FileUpload\FileUploadServiceProvider"
 
-#migrate
+# migrate
 
     php artisan migrate
 

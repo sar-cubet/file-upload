@@ -28,8 +28,9 @@ class FileUploadController extends Controller
             return response()->json(['status' => 0, 'errors' => $validator->errors()]);
         }
 
-        $file = Upload::optimizeImage($request->file('image'), $request->quality);
-        $url  = Upload::store($file, 's3');
+        $file = Upload::optimizeImage($request->file('file'), $request->quality);
+        $resized_file = Upload::resize(200, null, $file, false);
+        $url  = Upload::store($resized_file, 'public');
         
         UploadedFile::create(['path' => $url]);
 

@@ -21,11 +21,11 @@ You can install the package via **Composer**. Run the following command:
 
     composer require sar-cubet/file-upload
 
-## publish the package
+## Publish the package
 
     php artisan vendor:publish --provider="SarCubet\FileUpload\FileUploadServiceProvider"
 
-## migrate
+## Migrate
 
     php artisan migrate
 
@@ -35,13 +35,15 @@ We provide `SarCubet\FileUpload\Facades\Upload` Facade which you can use to perf
 You can validate your file by using the `Upload::validate()` method. The `Upload::validateFile()` accepts a file of type `Illuminate\Http\UploadedFile` and return a `Illuminate\Support\Facades\Validator` object you can use as per the application requirement. This `validateFile()` currently supports file types **(jpeg,png,jpg,gif,pdf,doc,docx,xls,xlsx,ppt,pptx,txt,exe) of size upto (5 mb)**.
 
 ```php
+use SarCubet\FileUpload\Facades\Upload;
+
 $validator = Upload::validateFile($request->file('file'));
 if ($validator->fails()) {
     return response()->json(['status' => 0, 'errors' => $validator->errors()]);
 }
 ```
 
-If you want to use custom validation and validation messages you can pass the rules and messages array as an optional parameter **(Note: rules and messages should be in proper order)**
+If you want to use custom validation and/or validation messages you can pass the rules and messages array as an optional parameter **(Note: rules and messages should be in proper order)**
 
 ```php
 $rules = [
@@ -62,15 +64,33 @@ $validator = Upload::validateFile($request->file('file'), $rules, $messages);
 You can optimize the image by using `Upload::optimizeImage()` method. Optimization is provided in 3 levels **(excellent, moderate and average)**. 
 
 ```php
-use SarCubet\FileUpload\Facades\Upload;
 $file = Upload::optimizeImage($request->file('image'), 'moderate'); 
 ```
 
-File storage is also possible through `Upload` facade.
+You can resize the image by using `Upload::resize()` method. The `resize()` method accepts 4 parameters: **width, height, file and preserve_aspect_ratio (optional)**
+
+```php
+Upload::resize(200, null, $file);
+```
+
+or
+
+```php
+Upload::resize(200, null, $file, true);
+```
+
+File storage is also possible through `Upload::store()` method. `store()` accepts 3 parameters: **file, disk_name, path (optional)**
 
 ```php
 $url = Upload::store($file, 's3');
 ```
+
+or
+
+```php
+$url = Upload::store($file, 's3', 'your_path');
+```
+
 
 For those who use **blade template engine** along with laravel, we provide an additional UI for uploading image and listing the uploaded images. Just need to add these 2 **routes** in **web.php** (use the route name **"getFiles"** itself)
 

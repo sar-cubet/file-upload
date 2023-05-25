@@ -2,6 +2,7 @@
 namespace SarCubet\FileUpload;
 
 use Illuminate\Support\ServiceProvider;
+use SarCubet\FileUpload\Console\InstallFileUploadPackage;
 
 class FileUploadServiceProvider extends ServiceProvider
 {

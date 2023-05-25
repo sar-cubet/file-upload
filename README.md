@@ -21,7 +21,7 @@ You can install the package via **Composer**. Run the following command:
 
     composer require sar-cubet/file-upload
 
-## Publish the package
+## Installing the package (publishing the resources)
 
     php artisan fileupload:install
 

@@ -21,7 +21,7 @@ class FileUploadServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(
-            __DIR__.'/config/fileupload.php', 'fileUpload'
+            config_path('fileupload.php'), 'fileUpload'
         );
 
         $this->app->bind('upload', function($app) {

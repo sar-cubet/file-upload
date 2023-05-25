@@ -16,6 +16,12 @@ class FileUploadServiceProvider extends ServiceProvider
             __DIR__.'/database/migrations/' => database_path('migrations'),
             __DIR__.'/config/fileupload.php' => config_path('fileupload.php')
         ]);
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                InstallFileUploadPackage::class,
+            ]);
+        }
     }
 
     public function register()

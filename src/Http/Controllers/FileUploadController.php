@@ -17,12 +17,19 @@ class FileUploadController extends Controller
 
     public function uploadProcess(Request $request)
     {
+        // $rules = [];
 
-        $rules = ['required', 'mimes:jpg,png'];
-        $messages = ['The file is required', 'Should have 30'];
+        // $rules = [
+        //     'required'           => 'File is mandatory',
+        //     'mimes:jpeg,jpg,png' => 'The file must be a file of following types: jpeg,jpg,png.',
+        //     'max:5120'           => 'The file must not be greater than 5 MB.'
+        // ];
         
-        $validator = Upload::validateFile($request->file('file'), $rules, $messages);
-        // dd($validator->errors()->all());
+        // $rules = ['max:5120'];
+        // $messages = ['The file must not be greater than 5 MB.'];
+        
+        $validator = Upload::validateFile($request->file('file'));
+        dd($validator->errors()->all());
 
         if ($validator->fails()) {
             return response()->json(['status' => 0, 'errors' => $validator->errors()]);

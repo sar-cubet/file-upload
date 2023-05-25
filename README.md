@@ -43,22 +43,16 @@ if ($validator->fails()) {
 }
 ```
 
-If you want to use custom validation and/or validation messages you can pass the rules and messages array as an optional parameter **(Note: rules and messages should be in proper order)**
+If you want to use custom validation and/or validation messages you can pass the rules and messages as an associative array (optional)
 
 ```php
 $rules = [
-    'required',
-    'mimes:jpg,png',
-    'max:5120'
+    'required'      => 'The file is required',
+    'mimes:jpg,png' => 'The file types should be any of the following: jpg,png',
+    'max:5120'      => 'The file size should not exceed 5MB'
 ];
 
-$messages = [
-    'The file is required',
-    'The file types should be any of the following: jpg,png',
-    'The file size should not exceed 5MB'
-];
-
-$validator = Upload::validateFile($request->file('file'), $rules, $messages);
+$validator = Upload::validateFile($request->file('file'), $rules);
 ```
 
 You can optimize the image by using `Upload::optimizeImage()` method. Optimization is provided in 3 levels **(excellent, moderate and average)**. 

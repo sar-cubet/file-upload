@@ -10,21 +10,20 @@ class FileUploadServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/routes/web.php');
         $this->loadViewsFrom(__DIR__.'/resources/views', 'fileUpload');
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
-        // $this->mergeConfigFrom(
-        //     __DIR__.'/config/aws.php', 'fileUpload'
-        // );
 
         $this->publishes([
             __DIR__.'/resources/views' => resource_path('views/vendor/file-upload'),
-
-        ]);
-        $this->publishes([
-            __DIR__.'/database/migrations/' => database_path('migrations')
+            __DIR__.'/database/migrations/' => database_path('migrations'),
+            __DIR__.'/config/fileupload.php' => config_path('fileupload.php')
         ]);
     }
 
     public function register()
     {
+        $this->mergeConfigFrom(
+            __DIR__.'/config/fileupload.php', 'fileUpload'
+        );
+
         $this->app->bind('upload', function($app) {
             return new Upload();
         });

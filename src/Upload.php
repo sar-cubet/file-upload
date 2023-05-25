@@ -60,8 +60,11 @@ class Upload
         return $url;
     }
 
-    public function validateFile(UploadedFile $file, array $rulesArray = [], array $messagesArray = [])
+    public function validateFile(UploadedFile $file, array $rulesAndMessagesArray = [])
     {
+        $rulesArray = array_keys($rulesAndMessagesArray);
+        $messagesArray = array_values($rulesAndMessagesArray);
+
         $rules = [];
         $messages = [];
 
@@ -82,31 +85,61 @@ class Upload
                 'file' => implode('|', $rulesArray)
             ];
         }else{
-            $allowedImageExtensions = ['jpeg', 'jpg', 'png', 'gif'];
-            $allowedDocumentExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'];
-            $allowedTextExtensions = ['txt'];
-            $allowedExecutableExtensions = ['exe'];
+            $allowedImageExtensions = config('fileUpload.allowed_file_extensions.image');
+            $allowedDocumentExtensions = config('fileUpload.allowed_file_extensions.doc');
+            $allowedTextExtensions = config('fileUpload.allowed_file_extensions.text');
+            $allowedOtherExtensions = config('fileUpload.allowed_file_extensions.others');
+            $sizeLimit = config('fileUpload.default_file_size_limit');
             $extension = $file->getClientOriginalExtension();
     
             if (in_array($extension, $allowedImageExtensions)) {
+                $mimes = implode(',', $allowedImageExtensions);
                 $rules = [
-                    'file' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120'
+                    'file' => 'required|image|mimes:'.$mimes.'|max:'.$sizeLimit
                 ];
+
             }else if(in_array($extension, $allowedDocumentExtensions)){
+                $mimes = implode(',', $allowedDocumentExtensions);
                 $rules = [
-                    'file' => 'required|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx|max:5120'
+                    'file' => 'required|mimes:'.$mimes.'|max:'.$sizeLimit
                 ];
             }elseif (in_array($extension, $allowedTextExtensions)) {
+                $mimes = implode(',', $allowedTextExtensions);
                 $rules = [
-                    'file' => 'required|mimes:txt|max:5120'
+                    'file' => 'required|mimes:'.$mimes.'|max:'.$sizeLimit
                 ];
-            } elseif (in_array($extension, $allowedExecutableExtensions)) {
+            } elseif (in_array($extension, $allowedOtherExtensions)) {
+                $mimes = implode(',', $allowedOtherExtensions);
                 $rules = [
-                    'file' => 'required|mimes:exe|max:5120'
+                    'file' => 'required|mimes:'.$mimes.'|max:'.$sizeLimit
                 ];
             } else {
+                $mimes = '';
+                if(count($allowedImageExtensions)){
+                    $mimes .= implode(',', $allowedImageExtensions); 
+                    $mimes = $this->trimChar(',',$mimes);       
+                }
+                
+                if(count($allowedDocumentExtensions)){
+                    $mimes .= ',';
+                    $mimes .= implode(',', $allowedDocumentExtensions);  
+                    $mimes = $this->trimChar(',',$mimes);      
+                }
+
+                if(count($allowedTextExtensions)){
+                    $mimes .= ',';
+                    $mimes .= implode(',', $allowedTextExtensions);    
+                    $mimes = $this->trimChar(',',$mimes);    
+                }
+
+                if(count($allowedOtherExtensions)){
+                    $mimes .= ',';
+                    $mimes .= implode(',', $allowedOtherExtensions); 
+                    $mimes = $this->trimChar(',',$mimes);       
+                }
+
                 $rules = [
-                    'file' => 'required|mimes:jpeg,png,jpg,gif,pdf,doc,docx,xls,xlsx,ppt,pptx,txt,exe|max:5120'
+                    'file' => 'required|mimes:'.$mimes.'|max:'.$sizeLimit
                 ];
             }
         }
@@ -202,5 +235,12 @@ class Upload
     {
         $validator = Validator::make(['file' => $file], $rules, $messages);
         return $validator;
+    }
+
+    private function trimChar($char, $string)
+    {
+        $string = ltrim($string, $char);
+        $string = rtrim($string, $char);
+        return $string;
     }
 }

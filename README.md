@@ -23,7 +23,7 @@ You can install the package via **Composer**. Run the following command:
 
 ## Publish the package
 
-    php artisan vendor:publish --provider="SarCubet\FileUpload\FileUploadServiceProvider"
+    php artisan fileupload:install
 
 ## Migrate
 

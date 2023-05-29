@@ -1,4 +1,5 @@
 <?php
+
 namespace SarCubet\FileUpload;
 
 use Illuminate\Support\ServiceProvider;
@@ -15,7 +16,7 @@ class FileUploadServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/resources/views' => resource_path('views/vendor/file-upload'),
             __DIR__.'/database/migrations/' => database_path('migrations'),
-            __DIR__.'/config/fileupload.php' => config_path('fileupload.php')
+            __DIR__.'/config/fileupload.php' => config_path('fileupload.php'),
         ]);
 
         if ($this->app->runningInConsole()) {
@@ -27,19 +28,20 @@ class FileUploadServiceProvider extends ServiceProvider
 
     public function register()
     {
-        if(file_exists(config_path('fileupload.php'))){
+        if (file_exists(config_path('fileupload.php'))) {
             $this->mergeConfigFrom(
-                config_path('fileupload.php'), 'fileUpload'
+                config_path('fileupload.php'),
+                'fileUpload'
             );
-        }else{
+        } else {
             $this->mergeConfigFrom(
-                __DIR__.'/config/fileupload.php', 'fileUpload'
+                __DIR__.'/config/fileupload.php',
+                'fileUpload'
             );
         }
 
-        $this->app->bind('upload', function($app) {
+        $this->app->bind('upload', function ($app) {
             return new Upload();
         });
     }
 }
-

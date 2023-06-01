@@ -82,7 +82,7 @@ or
 Upload::resize(200, null, $file, true);
 ```
 
-File storage is also possible through `Upload::store()` method. `store()` accepts 3 parameters: **file, disk_name, path (optional)**
+File storage is possible through `Upload::store()` method. `store()` accepts 3 parameters: **file, disk_name, path (optional)**
 
 ```php
 $url = Upload::store($file, 's3');
@@ -93,6 +93,47 @@ or
 ```php
 $url = Upload::store($file, 's3', 'your_path');
 ```
+
+Chunk file upload functionlaity is provided. You can use `Upload::receiveChunks()` method to receive chunks and its metadata. You can pass the `$request` instance into the method. The function will automatically recieve the metadata and each chunks and combine the chunks into a new file when all chunks are received. 
+
+```php
+use Illuminate\Http\Request;
+
+public function chunkFileUpload(Request $request)
+{
+    $recieve = Upload::receiveChunks($request);
+}
+```
+
+The first Http POST request should contain the metadata and then the chunks should be send. The metadata should contain the data as shown below.
+
+```javascript
+metadata:{
+    chunk_size: chunk_size,
+    total_chunk_count: total_chunk_count,
+    file_size: file_size,
+    file_extension: file_extension
+}
+```
+
+You can check upload status and store the file like below.
+
+```php
+if($receive->isUploadComplete()){
+    Upload::store($receive->getFile(), 'public');
+}
+```
+
+We also provide two methods for getting the last uploaded chunk and upload progress in percentage.
+
+```php
+$receive->getLastUploadedChunkIndex()
+$receive->getUploadProgressInPercentage()
+```
+
+
+
+
 
 
 

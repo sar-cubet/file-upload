@@ -7,5 +7,6 @@ return [
         'doc' => ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'],
         'text' => ['txt'],
         'others' => []
-    ]
+    ],
+    'chunk_file_upload_path' => public_path('upload/chunks')
 ];

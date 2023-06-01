@@ -19,6 +19,8 @@ class Upload
     private $lastUploadedChunkIndex;
     private $uploadProgressInPercentage;
     private $chunkFileExtension;
+    private $isVirusInfected;
+    private $malwareName;
 
     public function __construct()
     {
@@ -29,6 +31,8 @@ class Upload
         $this->lastUploadedChunkIndex = null;
         $this->uploadProgressInPercentage = 0;
         $this->chunkFileExtension = null;
+        $this->isVirusInfected = false;
+        $this->malwareName = '';
     }
 
     public function optimizeImage(UploadedFile $uploadedImage, string $qualityVal)
@@ -247,6 +251,37 @@ class Upload
     {
         return $this->uploadProgressInPercentage;
     }
+
+    public function scanFile(UploadedFile $file)
+    {
+        $command = "clamscan --infected {$file->getPathname()}";
+        $output = shell_exec($command);
+        
+        $infected = false;
+        $malwareName = '';
+
+        if (preg_match('/^(.*): (.*) FOUND$/m', $output, $matches)) {
+            $infected = true;
+            $malwareName = $matches[2];
+        }
+
+        $this->isVirusInfected = $infected;
+        $this->malwareName = $malwareName;
+        
+        return $this;
+    }
+
+    public function isFileInfected()
+    {
+        return $this->isVirusInfected;
+    }
+
+    public function getMalwareName()
+    {
+        return $this->malwareName;
+    }
+
+    // ----------------- PRIVATE FUNCTIONS -------------------- 
 
     private function calculateUploadProgress()
     {

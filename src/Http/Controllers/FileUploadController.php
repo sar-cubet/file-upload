@@ -4,6 +4,7 @@ namespace SarCubet\FileUpload\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use SarCubet\FileUpload\Models\UploadedFile;
 use SarCubet\FileUpload\Facades\Upload;
@@ -17,6 +18,14 @@ class FileUploadController extends Controller
 
     public function uploadProcess(Request $request)
     {
+        $scan_file = Upload::scanFile($request->file('file'));
+        
+        if ($scan_file->isFileInfected()) {
+            return "This file found with the malware :". $scan_file->getMalwareName();
+        } else {
+            return "This file is safe to upload.";
+        }
+
         // $rules = [];
 
         // $rules = [
@@ -29,7 +38,7 @@ class FileUploadController extends Controller
         // $messages = ['The file must not be greater than 5 MB.'];
         
         $validator = Upload::validateFile($request->file('file'));
-        dd($validator->errors()->all());
+        // dd($validator->errors()->all());
 
         if ($validator->fails()) {
             return response()->json(['status' => 0, 'errors' => $validator->errors()]);
@@ -48,5 +57,18 @@ class FileUploadController extends Controller
     {
         $data = UploadedFile::orderByDesc('id')->get();
         return response()->json(['status' => 1, 'data' => $data]);
+    }
+
+    public function chunkFileUpload(Request $request)
+    {
+        $receive = Upload::receiveChunks($request);
+        // dd($receive->getFile());
+        // return $receive->getUploadProgressInPercentage();
+        if($receive->isUploadComplete()){
+            Upload::store($receive->getFile(), 'public');
+            return true;
+        }else{
+            return false;
+        }
     }
 }

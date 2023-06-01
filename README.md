@@ -64,6 +64,36 @@ $rules = [
 $validator = Upload::validateFile($request->file('file'), $rules);
 ```
 
+If you wish to scan the uploaded file for any type of malwares. You can use the `Upload::scanFile()` method(**Note: Its recomented to use before using `validateFile()` or any other services.**). Under the hood we are making use of **ClamAV anti-virus scanner**. So you need to install ClamAV in your machine. 
+Here are the commands for installation (Ubuntu):
+
+```
+# Install clamav virus scanner
+sudo apt-get update && sudo apt-get install -y clamav-daemon
+```
+
+```
+# Update virus definitions
+sudo freshclam
+```
+
+```
+# Start the scanner service
+sudo systemctl enable --now clamav-daemon clamav-freshclam
+```
+
+Additionally you can use `isFileInfected()` and `getMalwareName()` methods identify and provide information of any malware like below:
+
+```php
+$scan_file = Upload::scanFile($request->file('file'));
+        
+if ($scan_file->isFileInfected()) {
+    return "This file is found with the malware :" . $scan_file->getMalwareName() . '.';
+} else {
+    return "This file is safe to upload.";
+}
+```
+
 You can optimize the image by using `Upload::optimizeImage()` method. Optimization is provided in 3 levels **(excellent, moderate and average)**. 
 
 ```php

@@ -127,8 +127,8 @@ if($receive->isUploadComplete()){
 We also provide two methods for getting the last uploaded chunk and upload progress in percentage.
 
 ```php
-$receive->getLastUploadedChunkIndex()
-$receive->getUploadProgressInPercentage()
+$receive->getLastUploadedChunkIndex();
+$receive->getUploadProgressInPercentage();
 ```
 
 

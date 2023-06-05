@@ -10,12 +10,8 @@ class FileUploadServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->loadRoutesFrom(__DIR__.'/routes/web.php');
-        $this->loadViewsFrom(__DIR__.'/resources/views', 'fileUpload');
-        $this->loadMigrationsFrom(__DIR__.'/database/migrations');
 
         $this->publishes([
-            __DIR__.'/resources/views' => resource_path('views/vendor/file-upload'),
-            __DIR__.'/database/migrations/' => database_path('migrations'),
             __DIR__.'/config/fileupload.php' => config_path('fileupload.php'),
         ]);
 

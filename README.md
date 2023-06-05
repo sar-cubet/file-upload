@@ -8,7 +8,11 @@ This is a Laravel package that provides file upload functionality with ease. It 
 
 - Simple and intuitive file upload handling.
 - Integration with Laravel's validation system.
-- Example code and usage instructions.
+- Image Optimization.
+- Image Resize.
+- File Storage.
+- Chunk File Upload for large files.
+- Virus scan.
 
 ## Requirements
 
@@ -24,10 +28,6 @@ You can install the package via **Composer**. Run the following command:
 ## Installing the package (publishing the resources)
 
     php artisan fileupload:install
-
-## Migrate
-
-    php artisan migrate
 
 ## Implementation
 

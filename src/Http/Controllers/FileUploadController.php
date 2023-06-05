@@ -18,52 +18,53 @@ class FileUploadController extends Controller
 
     public function uploadProcess(Request $request)
     {
-        $scan_file = Upload::scanFile($request->file('file'));
+        # ------------------ Default validation -------------------- 
+            // $validator = Upload::validateFile($request->file('file'));
+            // if ($validator->fails()) {
+            //     return response()->json(['status' => 0, 'errors' => $validator->errors()]);
+            // }
+        # -------------------------- End --------------------------- 
+
+        # ------------------ Custom mimes validation --------------------
+            // $rules = ['mimes:jpeg,jpg,png' => 'The file must be a file of following types: jpeg,jpg,png.'];
+            // $validator = Upload::validateFile($request->file('file'), $rules);
+            // if ($validator->fails()) {
+            //     return response()->json(['status' => 0, 'errors' => $validator->errors()]);
+            // }
+        # -------------------------- End --------------------------- 
+
+        # ------------------ Custom max validation --------------------
+            // $rules = ['max:5120' => 'The file must not be greater than 5 MB.'];
+            // $validator = Upload::validateFile($request->file('file'), $rules);
+            // if ($validator->fails()) {
+            //     return response()->json(['status' => 0, 'errors' => $validator->errors()]);
+            // }
+        # -------------------------- End --------------------------- 
         
-        if ($scan_file->isFileInfected()) {
-            return "This file found with the malware :". $scan_file->getMalwareName();
-        } else {
-            return "This file is safe to upload.";
-        }
+        # ------------------ Optimize Image --------------------
+            // $file = Upload::optimizeImage($request->file('file'), $request->quality);
+        # -------------------------- End --------------------------- 
 
-        // $rules = [];
+        # ------------------ Scan file --------------------
+            // $scan_file = Upload::scanFile($request->file('file'));
+            // if ($scan_file->isFileInfected()) {
+            //     return "This file found with the malware :". $scan_file->getMalwareName();
+            // } else {
+            //     return "This file is safe to upload.";
+            // }
+        # -------------------------- End ---------------------------
 
-        // $rules = [
-        //     'required'           => 'File is mandatory',
-        //     'mimes:jpeg,jpg,png' => 'The file must be a file of following types: jpeg,jpg,png.',
-        //     'max:5120'           => 'The file must not be greater than 5 MB.'
-        // ];
-        
-        // $rules = ['max:5120'];
-        // $messages = ['The file must not be greater than 5 MB.'];
-        
-        $validator = Upload::validateFile($request->file('file'));
-        // dd($validator->errors()->all());
-
-        if ($validator->fails()) {
-            return response()->json(['status' => 0, 'errors' => $validator->errors()]);
-        }
-
-        $file = Upload::optimizeImage($request->file('file'), $request->quality);
-        $resized_file = Upload::resize(200, null, $file, false);
-        $url  = Upload::store($resized_file, 'public');
-        
-        UploadedFile::create(['path' => $url]);
-
-        return response()->json(['status' => 1]);
-    }
-
-    public function getFiles()
-    {
-        $data = UploadedFile::orderByDesc('id')->get();
-        return response()->json(['status' => 1, 'data' => $data]);
+        # ------------------ Resize Image --------------------
+            // $resized_file = Upload::resize(200, null, $file, false);
+            // $url  = Upload::store($resized_file, 'public');
+            
+            // return response()->json(['status' => 1]);
+        # -------------------------- End ---------------------------
     }
 
     public function chunkFileUpload(Request $request)
     {
         $receive = Upload::receiveChunks($request);
-        // dd($receive->getFile());
-        // return $receive->getUploadProgressInPercentage();
         if($receive->isUploadComplete()){
             Upload::store($receive->getFile(), 'public');
             return true;

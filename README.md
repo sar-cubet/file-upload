@@ -1,4 +1,4 @@
-# Laravel File Upload Package
+# Laravel File Upload
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
